@@ -26,7 +26,8 @@ class Country_iterator:
     def __next__(self):
         self.counter +=1
         if self.counter < len(self.data):
-            return (self.data[self.counter]['name']['common'] + ' - ' + 'https://en.wikipedia.org/wiki/'+self.data[self.counter]['name']['common'])
+            country_name = self.data[self.counter]['name']['common']
+            return (country_name + ' - ' + 'https://en.wikipedia.org/wiki/'+country_name)
         else:
             raise StopIteration
             
