@@ -16,7 +16,7 @@ import json
 class Country_iterator:
     
     def __init__(self, path):
-        self.counter = 0
+        self.counter = -1
         with open(path) as file:
             self.data = json.load(file)
             
@@ -24,9 +24,10 @@ class Country_iterator:
         return(self)
         
     def __next__(self):
+        self.counter +=1
+        country_name = self.data[self.counter]['name']['common']
         if self.counter < len(self.data):
-            return self.data[self.counter]['name']['common']
-            self.counter += 1
+            return (country_name + ' - ' + 'https://en.wikipedia.org/wiki/'+country_name)
         else:
             raise StopIteration
             
