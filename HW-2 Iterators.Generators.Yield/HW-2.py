@@ -17,7 +17,7 @@ class Country_iterator:
     
     def __init__(self, path):
         self.counter = -1
-        with open(path) as file:
+        with open(path, encoding = 'utf-8') as file:
             self.data = json.load(file)
             
     def __iter__(self):
@@ -25,15 +25,13 @@ class Country_iterator:
         
     def __next__(self):
         self.counter +=1
-        country_name = self.data[self.counter]['name']['common']
         if self.counter < len(self.data):
-            return (country_name + ' - ' + 'https://en.wikipedia.org/wiki/'+country_name)
+            return (self.data[self.counter]['name']['common'] + ' - ' + 'https://en.wikipedia.org/wiki/'+self.data[self.counter]['name']['common'])
         else:
             raise StopIteration
             
 test_iter = Country_iterator('countries.json')
-print(next(test_iter))
-print(next(test_iter))
-print(next(test_iter))
-print(next(test_iter))
-print(next(test_iter))
+
+for country in test_iter:
+    with open ('test.csv', 'a', encoding = 'utf-8') as file:
+        file.writelines(country + '\n')
