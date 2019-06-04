@@ -27,12 +27,11 @@ class Country_iterator:
         self.counter +=1
         if self.counter < len(self.data):
             country_name = self.data[self.counter]['name']['common']
-            return (country_name + ' - ' + 'https://en.wikipedia.org/wiki/'+country_name)
+            pair = country_name + ' - ' + 'https://en.wikipedia.org/wiki/'+country_name
+            with open ('countries.csv', 'a', encoding = 'utf-8') as file:
+                file.writelines(pair + '\n')
         else:
             raise StopIteration
-            
-test_iter = Country_iterator('countries.json')
-
-for country in test_iter:
-    with open ('test.csv', 'a', encoding = 'utf-8') as file:
-        file.writelines(country + '\n')
+country_list = Country_iterator('countries.json')
+for item in country_list:
+    next(country_list)
