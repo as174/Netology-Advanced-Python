@@ -26,27 +26,23 @@ class Contact:
                 self.favorites_status = 'нет'
             else:
                 self.favorites_status = 'да'
-            return f'Имя: {self.name} \n'\
+            print  (f'Имя: {self.name} \n'\
                    f'Фамилия: {self.surname} \n'\
                    f'Телефон: {self.phone} \n'\
                    f'В избранных: {self.favorites_status} \n'\
-                   f'Дополнительная информация: \n'\
-#                   out_str=f'{out_str}\n{key}-{value}'
-#                   f''\n'.join(': '.join(v for v in k) for k in self.kwargs.items())' 
-#                   f'for k, v in self.kwargs.items() {self.kwargs.keys()}:{self.kwargs.values()}\n'\
-                       
-                       
-#                   f'{self.additional_info.keys()} : {self.additional_info.values()}'
-#                   f'{key} : {value} for key, value in self.additional_info.items():'
+                   f'Дополнительная информация:')
+            for item in self.args:
+                print (f'\t{item}')
+            for k, v in self.kwargs.items():
+                print (f'\t{k} {v}')
+            return ''
 
- 
-#for key, value in jhon.additional_info.items():
-#    print(key, ':', value)
             
-jhon = Contact('Jhon', 'Smith', '+71234567809', telegram='@jhony', email='jhony@smith.com')
+jhon = Contact('Jhon', 'Smith', '+71234567809', 'test_arg1', 'test_arg2', telegram='@jhony', email='jhony@smith.com')
 peter = Contact('Peter', 'Ivanov', '+7112312312309', favorites = 'True', telegram='@petya', email='petr@mail.com')
 
-#print(jhon)
+print(jhon)
+print(jhon.args)
 
 class PhoneBook(Contact):
     
