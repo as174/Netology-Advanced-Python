@@ -57,7 +57,6 @@ class EmailWorker:
             search_header = 'ALL'
         result, data = mail.uid('search', None, search_header)
         if data[0]:
-            assert data[0], 'There are no letters with current header'
             latest_email_uid = data[0].split()[-1]
             result, data = mail.uid('fetch', latest_email_uid, '(RFC822)')
             raw_email = data[0][1]
@@ -67,6 +66,7 @@ class EmailWorker:
             print('There are no letters with current header')
 
 if __name__ == '__main__':        
-    test = EmailWorker ('asa@gmail.com', '234324324')
-    test.send_message('a@gmail.com', 'test from PY PY', 'test' )
-#    test.receive_message('test')
+    test = EmailWorker ('asas@gmail.com', 'asas')
+#    test.send_message('a@gmail.com', 'test from PY PY', 'test' )
+    test.receive_message()
+    print(raw_email)
