@@ -32,7 +32,10 @@ class EmailWorker:
     def send_message(self, recipients, subject, message):
         msg = MIMEMultipart()
         msg['From'] = self.login
-        msg['To'] = ', '.join(recipients)
+        if len(recipients) == 1:
+            msg['To'] = ''.join(recipients)
+        else:    
+            msg['To'] = ', '.join(recipients)
         msg['Subject'] = subject
         msg.attach(MIMEText(message, 'plain', 'utf-8'))
         ms = smtplib.SMTP(self.smtp, 587)
@@ -40,7 +43,7 @@ class EmailWorker:
         ms.starttls()
         ms.ehlo()
         ms.login(self.login, self.password)
-        ms.sendmail(self.login, ms, msg.as_string())
+        ms.sendmail(self.login, recipients, msg.as_string())
         ms.quit()
     
     def receive_message(self, header = None):
@@ -64,7 +67,6 @@ class EmailWorker:
             print('There are no letters with current header')
 
 if __name__ == '__main__':        
-    test = EmailWorker ('login', 'password')
-    test.send_message('mail@mail.com', 'test from PY PY', 'test' )
-    test.receive_message('test')
-    
+    test = EmailWorker ('asa@gmail.com', '234324324')
+    test.send_message('a@gmail.com', 'test from PY PY', 'test' )
+#    test.receive_message('test')
