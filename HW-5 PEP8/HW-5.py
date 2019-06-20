@@ -59,14 +59,15 @@ class EmailWorker:
         if data[0]:
             latest_email_uid = data[0].split()[-1]
             result, data = mail.uid('fetch', latest_email_uid, '(RFC822)')
-            raw_email = data[0][1]
+            raw_email = str(data[0][1])
             email_message = email.message_from_string(raw_email)
+            print(email_message)
             mail.logout()
         else:
             print('There are no letters with current header')
 
 if __name__ == '__main__':        
-    test = EmailWorker ('asas@gmail.com', 'asas')
-#    test.send_message('a@gmail.com', 'test from PY PY', 'test' )
+    test = EmailWorker ('asdasdm@gmail.com', 'asdasdasd')
+    test.send_message('a@gmail.com', 'test from PY PY', 'test' )
     test.receive_message()
-    print(raw_email)
+
