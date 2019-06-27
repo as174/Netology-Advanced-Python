@@ -7,8 +7,6 @@ Created on Tue Jun 25 23:13:47 2019
 
 
 import re
-from pprint import pprint
-from itertools import groupby
 # читаем адресную книгу в формате CSV в список contacts_list
 import csv
 with open("phonebook_raw.csv") as f:
@@ -45,22 +43,29 @@ for contact in contacts_list:
             contact[2] = ''
             
 new_contacts_list = []
-                
+
+
 for i in range(len(contacts_list)):
     for j in range(i + 1, len(contacts_list)):
         if contacts_list[i][0] == contacts_list[j][0]:
-            new_contact = [k for k, l in zip(contacts_list[i], contacts_list[j])]
+            for l in range(len(contacts_list[i])):
+                if contacts_list[i][l] == '':
+                    contacts_list[i][l] = contacts_list[j][l]
+                if contacts_list[j][l] == '':
+                    contacts_list[j][l] = contacts_list[i][l]
+            new_contact = contacts_list[i]
         else:
             new_contact = contacts_list[i]
     new_contacts_list.append(new_contact)
-    
 
-unique_contact_list = [el for el, _ in groupby(new_contacts_list)]
 
-            
+
+unique_contacts_set = set(tuple(x) for x in new_contacts_list) 
+unique_contacts_list = [ list(x) for x in unique_contacts_set ] 
+
 
 # TODO 2: сохраните получившиеся данные в другой файл
 # код для записи файла в формате CSV
 with open("phonebook.csv", "w", newline='') as f:
   datawriter = csv.writer(f, delimiter=',')
-  datawriter.writerows(unique_contact_list)
+  datawriter.writerows(unique_contacts_list)
