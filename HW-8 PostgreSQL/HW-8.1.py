@@ -18,7 +18,7 @@ def create_db():
             """
             CREATE TABLE student_course (
             id serial PRIMARY KEY,
-            student_id INTEGER REFERENCES student(id),
+            student_id INTEGER REFERENCES student(id) not null,
             course_id INTEGER REFERENCES course(id))
             """)
     conn = psycopg2.connect(config)
@@ -51,7 +51,7 @@ def get_student(student_id):
     
     conn = psycopg2.connect(config)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM student WHERE id = (s.id) VALUES (%s)", (student_id))
+    cur.execute("SELECT * FROM student WHERE id = %s", (student_id, ))
     return(cur.fetchall())
     conn.commit()
     cur.close()
@@ -63,52 +63,28 @@ def add_students(course_id, students):
     for student in students:
         cur.execute("INSERT INTO student (name, gpa, birth) VALUES (%s, %s, %s)", 
                     (student['name'], student['gpa'], student['birth']))
+        cur.execute("SELECT id from student WHERE name = %s", (student['name'], ))
+        cur.execute("SELECT lastval()")
+        student_id = cur.fetchone()
         cur.execute("INSERT INTO student_course (student_id, course_id) VALUES (%s, %s)", 
-                    (student.id), (course.id))
-    conn.commit()
+                    (student_id, course_id, ))
+        conn.commit()
     cur.close()                              
-    pass    
+        
 
 def get_students(course_id): # возвращает студентов определенного курса
     
     conn = psycopg2.connect(config)
     cur = conn.cursor()
-    cur.execute("SELECT student.name, course.id FROM student_course `\
-                join student on student_course.student_id = student.id `\
-                join course on student_course.course_id = course.id")
+    cur.execute("""SELECT student.name FROM student_course 
+                JOIN student on student.id = student_course.student_id 
+                JOIN course on course.id = student_course.course_id 
+                WHERE course.id = %s""", (course_id, ))
+
     return(cur.fetchall())
     conn.commit()
     cur.close()
 
 
 if __name__ == '__main__':
-    config = 'dbname=netology_db user=admin'
-#    create_db()
-#    
-#    student_1 = {'name': 'test1 testovich1', 'gpa': '1.1', 'birth': '1991-01-01 11:30'}
-#    student_2 = {'name': 'test2 testovich2', 'gpa': '2.2', 'birth': '1992-02-02 11:30'}
-#    student_3 = {'name': 'test3 testovich3', 'gpa': '3.3', 'birth': '1993-03-03 11:30'}
-#    student_4 = {'name': 'tes4 testovich4', 'gpa': '4.4', 'birth': '1994-04-04 11:30'}
-#    
-#    
-#    python = 'python'
-#    php = 'php'
-    
-#    add_course(python)
-#    add_course(php)
-    
-#    add_student(student_4)
-    
-#    conn = psycopg2.connect(config)
-#    cur = conn.cursor()
-#    cur.execute("select * from course")
-#    print(cur.fetchall())
-    
-#
-#    conn = psycopg2.connect(config)
-#    cur = conn.cursor()
-#    cur.execute("SELECT * FROM student WHERE id = 3")
-#    print(cur.fetchall()) 
-
-    a = get_student(1)
-    print(a)
+    config = 'dbname=netology_db user=test password=123'
