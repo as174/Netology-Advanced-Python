@@ -1,13 +1,13 @@
 import csv
 import re
 import pymongo
-#from pprint import pprint
-#from pymongo import MongoClient
+from pprint import pprint
+
 
 
 client = pymongo.MongoClient("mongodb://mongoUser:Mongo123@netology-hw-cluster-shard-00-00-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-01-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-02-czw7w.mongodb.net:27017/test?ssl=true&replicaSet=Netology-HW-cluster-shard-0&authSource=admin&retryWrites=true&w=majority")
 db = client.test
-#collection = MongoClient().test.
+
 
 def read_data(csv_file, db):
     """
@@ -45,8 +45,8 @@ def find_by_name(name, db):
     return(list(result))
 
 if __name__ == '__main__':
-#    read_data('artists.csv', db)
-#    sort_by_price = find_cheapest(db)
-#    pprint(sort_by_price)
-#    name = find_by_name("t", db)
-#    pprint(name)
+    read_data('artists.csv', db)
+    sort_by_price = find_cheapest(db)
+    pprint(sort_by_price)
+    name = find_by_name("t", db)
+    pprint(name)
