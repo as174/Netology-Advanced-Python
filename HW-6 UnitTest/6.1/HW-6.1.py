@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 25 21:13:47 2019
 
-@author: AS
-"""
-#
 #Следует протестировать основные функции 
 #по получению информации о документах, добавлении и удалении элементов из словаря.
 #Используйте fixture для загрузки данных в тестовый класс
@@ -49,7 +43,11 @@ class TestSecretaryProgram(unittest.TestCase):
       with patch('secretary.input', return_value="10006") as test_doc:
         delete_doc()
       self.assertFalse(check_document_existance("10006")) 
-
+      
+    def test_add_new_doc(self):
+        with patch('secretary.input', return_value='123123') as test_doc:
+            add_new_doc('123123')
+        self.assertTrue(check_document_existance('123123'))
 
 
 if __name__ == '__main__':
