@@ -52,7 +52,9 @@ def get_profiles():
                 top_photo.append(p['sizes'][1]['url'])
         profile = 'https://www.vk.com/' + str(people)
         top_photo.insert(0, profile)
-        photos.append(top_photo)    
+        keys_list = ['id', 'photo1', 'photo2', 'photo3']
+        profile_dict = dict(zip(keys_list, top_photo))
+        photos.append(profile_dict)    
     return(photos) 
     
 print(get_profiles())
