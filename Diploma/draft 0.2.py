@@ -55,8 +55,9 @@ def get_top3_likes(photo):
 def mongo_insert(data):
     client = pymongo.MongoClient("mongodb://mongoUser:Mongo123@netology-hw-cluster-shard-00-00-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-01-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-02-czw7w.mongodb.net:27017/test?ssl=true&replicaSet=Netology-HW-cluster-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = client.diploma
-    collection = db['accounts']
-    collection.insert_one(data).inserted_id
+    collection = db.accounts
+    collection.insert_one(data)
+    client.close()
 
 #
 def get_profiles():
@@ -71,9 +72,9 @@ def get_profiles():
         top_photo.insert(0, profile)
         keys_list = ['id', 'photo1', 'photo2', 'photo3']
         profile_dict = dict(zip(keys_list, top_photo))
-        photos_json = json.dumps(profile_dict)
+#        photos_json = json.dumps(profile_dict)
 #        print(photos_json)
-        mongo_insert(photos_json)
+        mongo_insert(profile_dict)
         time.sleep(0.45)
 
 get_profiles()
