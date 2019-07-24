@@ -1,5 +1,5 @@
 import unittest
-from diploma import draft
+import draft2
 
 class TestDraft(unittest.TestCase):
     
@@ -7,7 +7,7 @@ class TestDraft(unittest.TestCase):
         self.user = 1306975
     
     def test_find_user_id(self):
-        self.assertGreater(len(find_user_id(self.user)), 0)
+        self.assertGreater((draft2.find_user_id(self.user)), 0)
         print('Есть id')
         
 
