@@ -12,6 +12,8 @@ api = vk_requests.create_api(service_token=access_token, api_version='5.101')
 #
 #
 user = input ('Введите id или имя пользователя')
+
+
 def find_user_id(user):
     try:
         user_id = int(user)
@@ -20,7 +22,7 @@ def find_user_id(user):
         user_id = search_id['items'][0]['id']
     return(user_id)
 
-def get_user_groups():
+def get_user_groups(user_id):
     groups = api.groups.get(user_ids=user_id)
     user_groups = groups['items']
     return(user_groups)
@@ -31,7 +33,7 @@ def get_user_info():
 #    user_id = 1306975
     user_id = find_user_id(user)
     user_info = api.users.get(user_ids=user_id, fields = ['sex','bdate','home_town'])
-    user_groups = get_user_groups()
+    user_groups = get_user_groups(user_id)
     user_info_dict = {}
     user_info_dict['sex'] = user_info[0]['sex']
     bdate = user_info[0]['bdate']
