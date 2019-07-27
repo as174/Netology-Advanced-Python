@@ -8,9 +8,7 @@ import random
 access_token = ''
 api = vk_requests.create_api(service_token=access_token, api_version='5.101')
 
-#user_id = 1306975
-#
-#
+
 user = input ('Введите id или имя пользователя')
 
 
@@ -22,6 +20,7 @@ def find_user_id(user):
         user_id = search_id['items'][0]['id']
     return(user_id)
 
+
 def get_user_groups(user_id):
     groups = api.groups.get(user_ids=user_id)
     user_groups = groups['items']
@@ -30,18 +29,18 @@ def get_user_groups(user_id):
 
 
 def get_user_info():
-#    user_id = 1306975
     user_id = find_user_id(user)
     user_info = api.users.get(user_ids=user_id, fields = ['sex','bdate','home_town'])
     user_groups = get_user_groups(user_id)
     user_info_dict = {}
     user_info_dict['sex'] = user_info[0]['sex']
-    bdate = user_info[0]['bdate']
-    if len(bdate) == 10 or len(bdate) == 9 or len(bdate) == 8:
-        birth_year = user_info[0]['bdate'][-4:]
-        now = datetime.datetime.now()
-        year_now = now.year
-        age = int(year_now) - int(birth_year)
+    if 'bdate' in user_info[0]:
+        bdate = user_info[0]['bdate']
+        if len(bdate) == 10 or len(bdate) == 9 or len(bdate) == 8:
+            birth_year = user_info[0]['bdate'][-4:]
+            now = datetime.datetime.now()
+            year_now = now.year
+            age = int(year_now) - int(birth_year)
     else:
         while True:
             try:
@@ -63,10 +62,10 @@ def get_user_info():
     return(user_info_dict)
 
 
-
 def get_10_random_pairs(full_list):
     random_list = random.sample(full_list, 10)
     return random_list
+
 
 def search_people():
     user_info_dict = get_user_info()
@@ -75,7 +74,7 @@ def search_people():
         searching_sex = 2
     else:
         searching_sex = 1
-    search_result = api.users.search(count = 20, fields = ['id'],\
+    search_result = api.users.search(count = 5, fields = ['id'],\
                                  sex = searching_sex, hometown = user_info_dict['home_town'],\
                                  age_from = user_info_dict['age'] - int(age_delta),\
                                  age_to = user_info_dict['age'] + int(age_delta),\
@@ -113,7 +112,8 @@ def get_top3_likes(photo):
         like_list.append((p['likes']['count']))
         like_list = sorted(like_list, key = int, reverse = True)
         top3_like_list = like_list[:3]
-        return(top3_like_list)
+    return(top3_like_list)
+
 
 def mongo_insert(data):
     client = pymongo.MongoClient("mongodb://mongoUser:Mongo123@netology-hw-cluster-shard-00-00-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-01-czw7w.mongodb.net:27017,netology-hw-cluster-shard-00-02-czw7w.mongodb.net:27017/test?ssl=true&replicaSet=Netology-HW-cluster-shard-0&authSource=admin&retryWrites=true&w=majority")
@@ -135,8 +135,9 @@ def get_profiles():
         top_photo.insert(0, profile)
         keys_list = ['id', 'photo1', 'photo2', 'photo3']
         profile_dict = dict(zip(keys_list, top_photo))
+        print(profile_dict)
         mongo_insert(profile_dict)
-        time.sleep(0.45)
+        time.sleep(0.34)
 
 if __name__ == '__main__':
     get_profiles()
