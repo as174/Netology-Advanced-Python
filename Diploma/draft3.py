@@ -74,7 +74,7 @@ def search_people():
         searching_sex = 2
     else:
         searching_sex = 1
-    search_result = api.users.search(count = 5, fields = ['id'],\
+    search_result = api.users.search(count = 50, fields = ['id'],\
                                  sex = searching_sex, hometown = user_info_dict['home_town'],\
                                  age_from = user_info_dict['age'] - int(age_delta),\
                                  age_to = user_info_dict['age'] + int(age_delta),\
@@ -91,7 +91,7 @@ def search_people():
         pair_dict['id'] = pair
         pair_dict['groups'] = pair_group
         pairs_list.append(pair_dict)
-        time.sleep(0.45)
+        time.sleep(0.34)
     for pair in pairs_list:
         counter = 0
         for group in user_info_dict['groups']:
