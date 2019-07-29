@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+
 import vk_requests
 import datetime
 import time
 import pymongo
 import random
 
-ACCESS_TOKEN = ''
-api = vk_requests.create_api(service_token=ACCESS_TOKEN, api_version='5.101')
 
+ACCESS_TOKEN = ''
+api = vk_requests.create_api(service_token = ACCESS_TOKEN, 
+                             api_version='5.101')
 
 
 def find_user_id():
@@ -21,27 +23,19 @@ def find_user_id():
 
 
 def get_user_groups(user_id):
-    groups = api.groups.get(user_ids=user_id)
+    groups = api.groups.get(user_ids = user_id)
     user_groups = groups['items']
     return(user_groups)
 
 
-
 def get_user_info():
     user_id = find_user_id()
-    user_info = api.users.get(user_ids=user_id, \
+    user_info = api.users.get(user_ids = user_id,
                               fields = ['sex','bdate','home_town'])
     user_groups = get_user_groups(user_id)
     user_info_dict = {}
     user_info_dict['sex'] = user_info[0]['sex']
-    if 'bdate' in user_info[0]:
-        bdate = user_info[0]['bdate']
-        if len(bdate) == 10 or len(bdate) == 9 or len(bdate) == 8:
-            birth_year = user_info[0]['bdate'][-4:]
-            now = datetime.datetime.now()
-            year_now = now.year
-            age = int(year_now) - int(birth_year)
-    else:
+    if 'bdate' not in user_info[0]:
         while True:
             try:
                 age = int(input('Сколько вам лет?'))
@@ -50,6 +44,22 @@ def get_user_info():
                 continue
             else:
                 break
+    else:
+        bdate = user_info[0]['bdate']
+        if len(bdate) in [8, 9, 10]:
+            birth_year = user_info[0]['bdate'][-4:]
+            now = datetime.datetime.now()
+            year_now = now.year
+            age = int(year_now) - int(birth_year)
+        else:
+            while True:
+                try:
+                    age = int(input('Сколько вам лет?'))
+                except ValueError:
+                    print('И все-таки сколько вам лет?')
+                    continue
+                else:
+                    break    
     user_info_dict['age'] = age
     if 'home_town' in user_info[0]:
         if user_info[0]['home_town'] == '':
@@ -61,6 +71,7 @@ def get_user_info():
     user_info_dict['groups'] = user_groups
     return(user_info_dict)
 
+print(get_user_info())
 
 def get_10_random_pairs(full_list):
     random_list = random.sample(full_list, 10)
@@ -74,20 +85,20 @@ def search_people():
         searching_sex = 2
     else:
         searching_sex = 1
-    search_result = api.users.search(count = 50, fields = ['id'],\
-                                 sex = searching_sex, \
-                                 hometown = user_info_dict['home_town'],\
-                                 age_from = user_info_dict['age'] - int(age_delta),\
-                                 age_to = user_info_dict['age'] + int(age_delta),\
+    search_result = api.users.search(count = 50, fields = ['id'],
+                                 sex = searching_sex, 
+                                 hometown = user_info_dict['home_town'],
+                                 age_from = user_info_dict['age'] - int(age_delta),
+                                 age_to = user_info_dict['age'] + int(age_delta),
                                  status = 6)
     search_result_list = []
     for pair in search_result['items']:
-        if pair['is_closed'] == False:
+        if not pair['is_closed']:
             search_result_list.append(pair['id'])
     pairs_list = []
     for pair in search_result_list:
         pair_dict = {}
-        pair_groups = api.groups.get(user_ids=pair)
+        pair_groups = api.groups.get(user_ids = pair)
         time.sleep(0.34)
         pair_group = pair_groups['items']
         pair_dict['id'] = pair
@@ -97,7 +108,7 @@ def search_people():
         counter = 0
         for group in user_info_dict['groups']:
             if group in pair['groups']:
-                counter +=1
+                counter += 1
             pair['rank'] = counter
     pairs_list = sorted(pairs_list, key=lambda x: x['rank'])
     top_pairs = pairs_list[-10:]
@@ -128,7 +139,10 @@ def mongo_insert(data):
 
 def get_profiles():
     for people in search_people():
-        photo = api.photos.get(owner_id = people, album_id = 'profile', extended = 1, count = 5)
+        photo = api.photos.get(owner_id = people, 
+                               album_id = 'profile', 
+                               extended = 1, 
+                               count = 5)
         top3_like_list = get_top3_likes(photo)
         top_photo = []
         for p in photo['items']:
@@ -136,7 +150,10 @@ def get_profiles():
                 top_photo.append(p['sizes'][1]['url'])
         profile = 'https://www.vk.com/id' + str(people)
         top_photo.insert(0, profile)
-        keys_list = ['id', 'photo1', 'photo2', 'photo3']
+        keys_list = ['id', 
+                     'photo1', 
+                     'photo2', 
+                     'photo3']
         profile_dict = dict(zip(keys_list, top_photo))
         print(profile_dict)
         mongo_insert(profile_dict)
