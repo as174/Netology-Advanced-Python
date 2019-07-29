@@ -4,7 +4,6 @@ import vk_requests
 import datetime
 import time
 import pymongo
-import random
 
 
 ACCESS_TOKEN = ''
@@ -70,12 +69,6 @@ def get_user_info():
         user_info_dict['home_town'] = input('Из какого вы города?')
     user_info_dict['groups'] = user_groups
     return(user_info_dict)
-
-print(get_user_info())
-
-def get_10_random_pairs(full_list):
-    random_list = random.sample(full_list, 10)
-    return random_list
 
 
 def search_people():
